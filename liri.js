@@ -15,53 +15,88 @@ var arg = process.argv;
 var command = arg[2];
 var term = arg.slice(3).join(" ");
 
+// Constructor for Command
+var LiriCommand = function() {
+    // concert-this
+    this.concert = function(artist) {
+        // make axios call to search for concert details
+        var URL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
+        axios.get(URL).then(function(response){
+            var concertData = response.data[0];
+            // console.log(data);
+            var venueName = concertData.venue.name;
+            var city = concertData.venue.city;
+            var country = concertData.venue.country;
+            var location = city + ", " + country;
+            var date = moment(concertData.datetime).format('MM/DD/YYYY');
+            // combine all info for artist
+            var concertResult = "\nArtist: " + term + "\nVenue: " + venueName + "\nLocation: " + location + "\nDate: " + date + "\n\n";
+            console.log(concertResult);
+            fs.appendFile("log.txt", concertResult,function(error) {
+                if (error) {
+                    console.log(error);
+                }
+            });
+        }).catch(function(error){
+        console.log(error);
+        });
+    };
+
+    // spotify-this-song
+    this.spotify = function(song) { 
+        spotify.search({
+            type: "track", query: song})
+            .then (function(error, response) {
+                if (error) { return console.log("Error: " + error)};
+                var spotifyData = response.data;
+                console.log(JSON.stringify(spotifyData));
+                var artists = spotifyData.artists[0].name;
+                var title = spotifyData.tracks[0].name;
+                console.log(artists);
+                console.log(title)}) 
+            .catch(function(error){
+            console.log("Error: " + error);
+            });
+
+        // artist(s)
+        // song's name
+        // preview link of song
+        // album that song is from
+
+    };
+
+    this.movie = function(movie) {
+        // make axios call to search for movie details
+        var URL = "www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+        axios.get(URL).then(function(response){
+
+        });
+
+    };
+
+// do-what-it-says
+
+};
+
+// Create liri object
+var liriCommand = new LiriCommand();
+
 // CONCERT
 if (command === "concert-this") {
-    var URL = "https://rest.bandsintown.com/artists/" + term + "/events?app_id=codingbootcamp"
-    axios.get(URL).then(function(response){
-        var concertData = response.data[0];
-        // console.log(data);
-        var venueName = concertData.venue.name;
-        var city = concertData.venue.city;
-        var country = concertData.venue.country;
-        var location = city + ", " + country;
-        var date = moment(concertData.datetime).format('MM/DD/YYYY');
-        console.log(date);
-        var artistResult = "\nArtist: " + term + "\nVenue: " + venueName + "\nLocation: " + location + "\nDate: " + date + "\n\n";
-        console.log(artistResult);
-        fs.appendFile("log.txt", artistResult,function(error) {
-            if (error) {
-                console.log(error);
-            }
-        });
-    }).catch(function(error){
-    console.log(error);
-    });
+    console.log("Looking for concert info for " + term);
+    liriCommand.concert(term);
 }
 
 // SPOTIFY
 else if (command === "spotify-this-song") {
-    spotify.search({
-        type: "track", query: term
-    }).then (function(response) {
-        var spotifyData = response.data;
-        console.log(JSON.stringify(spotifyData));
-        // var artists = spotifyData.artists.join(", ");
-        // var title = spotifyData.tracks;
-
-        console.log(response);
-    }).catch(function(error){
-        console.log("Error: " + error);
-    });
-
-// artist(s)
-// song's name
-// preview link of song
-// album that song is from
-
-
-};
+    if (!term) {
+        term = "The Sign"
+    }
+    liriCommand.spotify(term);
+}
 
 // MOVIE
-
-// do-what-it-says
+else if (command === "movie-this") {
+    term = arg.slice(3).join("+");
+    liriCommand.movie(term);
+};
