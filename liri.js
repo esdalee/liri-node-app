@@ -68,10 +68,29 @@ var LiriCommand = function() {
     this.movie = function(movie) {
         // make axios call to search for movie details
         var URL = "www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
-        axios.get(URL).then(function(response){
-
+        axios.get(URL).then(function(response){       
+            var movieData = response.data[0];
+            // console.log(data);
+            var title = movieData.Title;
+            var year = movieData.Year;
+            var imdb = movieData.imdbRating;
+            var rottenTomatoes = movieData.Ratings[1].Value;
+            var prodCountry = movieData.Country;
+            var language = movieData.Language;
+            var plot = movieData.plot;
+            var actors = movieData.Actors;
+            // combine all info for movie
+            var movieResult = "\nTitle: " + title + "\nYear Released: " + year + "\nIMDB Rating: " + imdb + "\nRotten Tomatoes Rating: " + rottenTomatoes + 
+            "\nProduced in : " + prodCountry + "\nLanguage: " + langugae + "\nPlot: " + plot + "\nActors: " + actors + "\n\n";
+            console.log(movieResult);
+            fs.appendFile("log.txt", movieResult,function(error) {
+                if (error) {
+                    console.log(error);
+                }
+            });
+        }).catch(function(error){
+        console.log(error);
         });
-
     };
 
 // do-what-it-says
@@ -90,13 +109,16 @@ if (command === "concert-this") {
 // SPOTIFY
 else if (command === "spotify-this-song") {
     if (!term) {
-        term = "The Sign"
+        term = "The Sign";
     }
     liriCommand.spotify(term);
 }
 
 // MOVIE
 else if (command === "movie-this") {
+    if (!term) {
+        term = "Mr.Nobody";
+    }
     term = arg.slice(3).join("+");
     liriCommand.movie(term);
 };
