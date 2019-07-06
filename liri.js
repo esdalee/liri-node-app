@@ -76,7 +76,6 @@ var LiriCommand = function() {
             var year = movieData.Year;
             var imdb = movieData.imdbRating;
             var rottenTomatoes = movieData.Ratings[1].Value;
-            console.log(rottenTomatoes);
             var prodCountry = movieData.Country;
             var language = movieData.Language;
             var plot = movieData.plot;
