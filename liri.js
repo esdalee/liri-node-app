@@ -47,17 +47,14 @@ var LiriCommand = function() {
         spotify.search({
             type: "track", query: song})
             .then (function(response) {
-                // if (error) { return console.log("Error 1: " + error)};
-                console.log(response.tracks.items[0].album.name)
-                var spotifyData = response.items;
-                // console.log(JSON.stringify(spotifyData));
-                // var artists = spotifyData.artists[0].name;
-                // var title = spotifyData.tracks[0].name;
-                // console.log(artists);
-                // console.log(title)
-            }) 
+                var spotifyData = response.tracks.items[0];
+                var artist = spotifyData.artists[0].name;  
+                var title =  spotifyData.name;
+                var preview = spotifyData.external_urls.spotify;
+                var album = spotifyData.album.name;
+            })
             .catch(function(error){
-            console.log("Error 2: " + error);
+            console.log("Error: " + error);
             });
 
         // artist(s)
