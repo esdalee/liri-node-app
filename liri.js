@@ -46,16 +46,18 @@ var LiriCommand = function() {
     this.spotify = function(song) { 
         spotify.search({
             type: "track", query: song})
-            .then (function(error, response) {
-                if (error) { return console.log("Error: " + error)};
-                var spotifyData = response.data;
-                console.log(JSON.stringify(spotifyData));
-                var artists = spotifyData.artists[0].name;
-                var title = spotifyData.tracks[0].name;
-                console.log(artists);
-                console.log(title)}) 
+            .then (function(response) {
+                // if (error) { return console.log("Error 1: " + error)};
+                console.log(response.tracks.items[0].album.name)
+                var spotifyData = response.items;
+                // console.log(JSON.stringify(spotifyData));
+                // var artists = spotifyData.artists[0].name;
+                // var title = spotifyData.tracks[0].name;
+                // console.log(artists);
+                // console.log(title)
+            }) 
             .catch(function(error){
-            console.log("Error: " + error);
+            console.log("Error 2: " + error);
             });
 
         // artist(s)
@@ -81,7 +83,7 @@ var LiriCommand = function() {
             var actors = movieData.Actors;
             // combine all info for movie
             var movieResult = "\nTitle: " + title + "\nYear Released: " + year + "\nIMDB Rating: " + imdb + "\nRotten Tomatoes Rating: " + rottenTomatoes + 
-            "\nProduced in : " + prodCountry + "\nLanguage: " + langugae + "\nPlot: " + plot + "\nActors: " + actors + "\n\n";
+            "\nProduced in : " + prodCountry + "\nLanguage: " + language + "\nPlot: " + plot + "\nActors: " + actors + "\n\n";
             console.log(movieResult);
             fs.appendFile("log.txt", movieResult,function(error) {
                 if (error) {
@@ -122,3 +124,7 @@ else if (command === "movie-this") {
     term = arg.slice(3).join("+");
     liriCommand.movie(term);
 };
+
+// else if (command === "do-what-it-says") {
+
+// };
